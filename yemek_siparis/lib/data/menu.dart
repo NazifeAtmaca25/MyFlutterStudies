@@ -182,7 +182,7 @@ class Menu {
     ),
   ];
 
-  Map<String,List<Product>> allMenu={
+  static Map<String,List<Product>> allMenu={
     'Pizza':[
       Pizza(
         'Margherita',
