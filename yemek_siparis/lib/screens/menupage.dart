@@ -3,15 +3,20 @@ import 'package:flutter/material.dart';
 import '../data/menu.dart';
 import '../models/product.dart';
 
-class Menupage extends StatelessWidget {
+class Menupage extends StatefulWidget {
   final String title;
   const Menupage({super.key, required this.title});
 
   @override
+  State<Menupage> createState() => _MenupageState();
+}
+
+class _MenupageState extends State<Menupage> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget.title),
         centerTitle: true,
         titleTextStyle: TextStyle(
             fontSize: 24,
@@ -22,9 +27,9 @@ class Menupage extends StatelessWidget {
       ),
       body: Center(
         child: ListView.builder(
-          itemCount: Menu.allMenu[title]!.length,
+          itemCount: Menu.allMenu[widget.title]!.length,
             itemBuilder: (context, index){
-            var product=Menu.allMenu[title]![index];
+            var product=Menu.allMenu[widget.title]![index];
           return buildContainer(product);
         }),
       ),
@@ -49,26 +54,43 @@ class Menupage extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Container(
-                  width: 100,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(topLeft:Radius.circular(15), bottomLeft: Radius.circular(15)),
-                      image: DecorationImage(image: NetworkImage(product.imageUrl),fit: BoxFit.cover),
-                  ),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(topLeft:Radius.circular(15), bottomLeft: Radius.circular(15)),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.only(topLeft:Radius.circular(15), bottomLeft: Radius.circular(15)),
+                      child: Image.network(product.imageUrl,fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        }
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset("assets/image/food.png",fit: BoxFit.cover,);
+                      },),
+                    ),
 
+                  ),
                 ),
                 SizedBox(width: 5,),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        flex:1,
-                        child: Text(product.name,
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(product.name,
                           style: TextStyle(fontSize: 20),),
-                      ),
-                      Text("Fiyat: ${product.price} TL",style: TextStyle(fontSize: 15),)
-                    ],
+                        Text("Fiyat: ${product.price} TL",style: TextStyle(fontSize: 15),)
+                      ],
+                    ),
                   ),
                 )
               ],
