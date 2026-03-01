@@ -4,6 +4,8 @@ import 'package:yemek_siparis/screens/detailpage.dart';
 import 'package:yemek_siparis/screens/homepage.dart';
 import 'package:yemek_siparis/screens/menupage.dart';
 
+import 'models/product.dart';
+
 class RouteGenerator {
   static Route<dynamic>? getPage(RouteSettings setting){
     switch(setting.name){
@@ -13,7 +15,8 @@ class RouteGenerator {
         var bilgi=setting.arguments as String;
         return MaterialPageRoute(builder: (context)=>Menupage(title:bilgi,),settings: setting);
       case "/detail":
-        return MaterialPageRoute(builder: (context)=>Detailpage(),settings: setting);
+        var information=setting.arguments as Product;
+        return MaterialPageRoute(builder: (context)=>Detailpage(product: information,),settings: setting);
       case "/basket":
         return MaterialPageRoute(builder: (context)=>Basket(),settings: setting);
       default:

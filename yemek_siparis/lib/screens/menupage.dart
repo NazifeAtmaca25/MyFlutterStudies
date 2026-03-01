@@ -16,6 +16,9 @@ class _MenupageState extends State<Menupage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(
+          color: Colors.white,
+        ),
         title: Text(widget.title),
         centerTitle: true,
         titleTextStyle: TextStyle(
@@ -36,65 +39,82 @@ class _MenupageState extends State<Menupage> {
     );
   }
 
-  Container buildContainer(Product product) {
-    return Container(
-            height: 100,
-            margin: EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(width: 1,color: Colors.grey),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 5,
-                  offset: Offset(0, 3)
-                )
-              ]
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(topLeft:Radius.circular(15), bottomLeft: Radius.circular(15)),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.only(topLeft:Radius.circular(15), bottomLeft: Radius.circular(15)),
-                      child: Image.network(product.imageUrl,fit: BoxFit.cover,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        }
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return Image.asset("assets/image/food.png",fit: BoxFit.cover,);
-                      },),
-                    ),
+  Widget buildContainer(Product product) {
+    return GestureDetector(
+      onTap: (){
+        Navigator.pushNamed((context), '/detail',arguments: product);
+      },
+      child: Container(
+              height: 100,
+              margin: EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(width: 1,color: Colors.grey),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 5,
+                    offset: Offset(0, 3)
+                  )
+                ]
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      width: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(topLeft:Radius.circular(15), bottomLeft: Radius.circular(15)),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(topLeft:Radius.circular(15), bottomLeft: Radius.circular(15)),
+                        child: Image.network(product.imageUrl,fit: BoxFit.cover,
+                          frameBuilder: (context, child, frame, sync) {
+                            if (frame == null) {
+                              return const SizedBox(
+                                width: 100,
+                                height: 100,
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            }
+                            return child;
+                          },
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset("assets/image/food.png",fit: BoxFit.cover,);
+                        },),
+                      ),
 
-                  ),
-                ),
-                SizedBox(width: 5,),
-                Expanded(
-                  flex: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Text(product.name,
-                          style: TextStyle(fontSize: 20),),
-                        Text("Fiyat: ${product.price} TL",style: TextStyle(fontSize: 15),)
-                      ],
                     ),
                   ),
-                )
-              ],
+                  SizedBox(width: 5,),
+                  Expanded(
+                    flex: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Text(product.name,
+                            style: TextStyle(fontSize: 20),),
+                          Text("Fiyat: ${product.price} TL",style: TextStyle(fontSize: 15),)
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
-          );
+    );
   }
 }
